@@ -76,45 +76,45 @@ These operations are inherently parallelizable, making them ideal candidates for
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    GPU TRAINING PIPELINE                         │
+│                    GPU TRAINING PIPELINE                        │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  Input Data (X, y)                                               │
-│       │                                                          │
-│       ▼                                                          │
+│                                                                 │
+│  Input Data (X, y)                                              │
+│       │                                                         │
+│       ▼                                                         │
 │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐          │
-│  │  Add Bias   │───▶│  Transfer   │───▶│  Initialize │          │
+│  │  Add Bias   │───▶  Transfer   ───▶  Initialize              │
 │  │  Column     │    │  to GPU     │    │  Weights    │          │
 │  └─────────────┘    └─────────────┘    └─────────────┘          │
-│                                              │                   │
-│                                              ▼                   │
+│                                              │                  │
+│                                              ▼                  │
 │  ┌──────────────────────────────────────────────────────────┐   │
-│  │                   TRAINING LOOP                           │   │
+│  │                   TRAINING LOOP                          │   │
 │  │  ┌─────────────────────────────────────────────────────┐ │   │
-│  │  │ FORWARD PASS:                                        │ │   │
+│  │  │ FORWARD PASS:                                       │ │   │
 │  │  │  • vector_matrix_mul: w × X^T                       │ │   │
 │  │  │  • matrix_col_sum: Reduce to predictions            │ │   │
 │  │  │  • sigmoid: Apply activation function               │ │   │
 │  │  └─────────────────────────────────────────────────────┘ │   │
-│  │                          │                                │   │
-│  │                          ▼                                │   │
+│  │                          │                               │   │
+│  │                          ▼                               │   │
 │  │  ┌─────────────────────────────────────────────────────┐ │   │
-│  │  │ BACKWARD PASS:                                       │ │   │
+│  │  │ BACKWARD PASS:                                      │ │   │
 │  │  │  • subtract: Compute error (y - ŷ)                  │ │   │
 │  │  │  • vector_matrix_mul: Error × X                     │ │   │
 │  │  │  • matrix_col_sum: Aggregate gradients              │ │   │
 │  │  └─────────────────────────────────────────────────────┘ │   │
-│  │                          │                                │   │
-│  │                          ▼                                │   │
+│  │                          │                               │   │
+│  │                          ▼                               │   │
 │  │  ┌─────────────────────────────────────────────────────┐ │   │
-│  │  │ UPDATE:                                              │ │   │
+│  │  │ UPDATE:                                             │ │   │
 │  │  │  • Scale gradient by learning rate                  │ │   │
 │  │  │  • subtract: w = w - lr × gradient                  │ │   │
 │  │  │  • norm2: Check convergence                         │ │   │
 │  │  └─────────────────────────────────────────────────────┘ │   │
 │  └──────────────────────────────────────────────────────────┘   │
-│                              │                                   │
-│                              ▼                                   │
+│                              │                                  │
+│                              ▼                                  │
 │                    ┌─────────────────┐                          │
 │                    │  Return Weights │                          │
 │                    └─────────────────┘                          │
@@ -125,17 +125,17 @@ These operations are inherently parallelizable, making them ideal candidates for
 
 ```
 CPU Memory                          GPU Memory
-┌────────────┐                      ┌────────────┐
-│   X (n×m)  │ ──cuda.to_device()──▶│   X_d      │
-│   y (1×n)  │ ──cuda.to_device()──▶│   y_d      │
-│   w (1×m)  │ ──cuda.to_device()──▶│   w_d      │
-└────────────┘                      └────────────┘
+┌────────────┐                      ┌───────────┐
+│   X (n×m)  │ ──cuda.to_device()──▶    X_d      
+│   y (1×n)    ──cuda.to_device()──▶    y_d      
+│   w (1×m)  │ ──cuda.to_device()──▶    w_d      
+└────────────┘                      └───────────┘
                                           │
                                     GPU Kernels
                                           │
                                           ▼
                                     ┌────────────┐
-                    ◀──copy_to_host()──│  Results   │
+                    ◀──copy_to_host()  Results  
                                     └────────────┘
 ```
 
