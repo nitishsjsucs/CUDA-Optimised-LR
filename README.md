@@ -594,6 +594,15 @@ copies of the Software.
 
 ---
 
+## My Contributions
+
+- **CUDA Kernel Design** — Designed and implemented all GPU kernels (matrix multiplication, sigmoid activation, gradient computation, loss calculation) with optimized thread/block configurations and shared memory usage.
+- **Training Pipeline** — Built the end-to-end GPU-accelerated training loop with configurable hyperparameters, convergence detection, and automatic CPU/GPU memory transfer management.
+- **Performance Benchmarking** — Developed the benchmarking framework comparing CPU vs GPU execution across varying dataset sizes, demonstrating up to 100x speedup on large datasets.
+- **API Design** — Created the scikit-learn-compatible API (`fit`, `predict`, `predict_proba`) for seamless integration into existing ML workflows.
+
+---
+
 ## Acknowledgments
 
 - **Numba** - CUDA JIT compilation for Python
