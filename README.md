@@ -598,7 +598,7 @@ copies of the Software.
 
 - **CUDA Kernel Design** — Designed and implemented all GPU kernels (matrix multiplication, sigmoid activation, gradient computation, loss calculation) with optimized thread/block configurations and shared memory usage.
 - **Training Pipeline** — Built the end-to-end GPU-accelerated training loop with configurable hyperparameters, convergence detection, and automatic CPU/GPU memory transfer management.
-- **Performance Benchmarking** — Developed the benchmarking framework comparing CPU vs GPU execution across varying dataset sizes, demonstrating up to 100x speedup on large datasets.
+- **Performance Benchmarking** — Developed the benchmarking framework comparing CPU vs GPU execution across varying dataset sizes, measuring up to 6.5× speedup at 250,000 samples. The comparator is a sequential CPU implementation, not a tuned BLAS library such as cuBLAS.
 - **API Design** — Created the scikit-learn-compatible API (`fit`, `predict`, `predict_proba`) for seamless integration into existing ML workflows.
 
 ---
